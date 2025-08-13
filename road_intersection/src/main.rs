@@ -138,6 +138,9 @@ async fn main() {
     loop {
         clear_background(BLACK);
 
+        let mut can_xhenge_light = false ;
+        println!("{}",can_xhenge_light);
+
         draw_line(center_x, 0.0, center_x, height_screen, 2.0, WHITE);
         draw_line(center_x - lane_space, 0.0, center_x - lane_space, height_screen, 1.0, GRAY);
         draw_line(center_x + lane_space, 0.0, center_x + lane_space, height_screen, 1.0, GRAY);
@@ -149,22 +152,18 @@ async fn main() {
        if click >= 0.40 {
         if is_key_pressed(KeyCode::Up) {
             click = 0.0 ;
-            // println!("up");
             cars.push(Car::new(Direction::South, vec2(center_x , height_screen)));
         }
         if is_key_pressed(KeyCode::Down) {
             click = 0.0 ;
-            //  println!("Down");
               cars.push(Car::new(Direction::North, vec2(center_x - lane_space, 0.0)));
         }
         if is_key_pressed(KeyCode::Left) {
             click = 0.0 ;
-            //  println!("Left");
             cars.push(Car::new(Direction::East, vec2(0.0, center_y )));
         }
         if is_key_pressed(KeyCode::Right) {
             click = 0.0 ;
-            //  println!("Right");
             cars.push(Car::new(Direction::West, vec2(width_screen, center_y - lane_space)));
         }
         
@@ -172,20 +171,9 @@ async fn main() {
 
         let dt = 0.02;
         click += dt;
-        timer += dt;
-        if timer > green_duration {
-            lights[current_green].set_state(LightState::Red);
-            current_green = (current_green + 1) % lights.len();
-            lights[current_green].set_state(LightState::Green);
-            timer = 0.0;
-        }
+        
 
         for (i, light) in lights.iter_mut().enumerate() {
-            // if i == current_green {
-            //     light.set_state(LightState::Green);
-            // } else {
-            //     light.set_state(LightState::Red);
-            // }
             light.draw(light_size);
         }
         let mut canmove = lights[0].direction.str_drection();
@@ -198,26 +186,43 @@ async fn main() {
             if car.start_direction.str_drection() == canmove  {
                 car.update();
                 car.draw(car_size);
+                 if car.start_direction.str_drection() == "North" || car.start_direction.str_drection() == "South"{
+                    if car.position.y > center_y- 60. -30. || car.position.y < center_y+60.0 {
+                        can_xhenge_light = true;
+                    }
+                }else {
+                    if car.position.x > center_x- 60. - 30. || car.position.x < center_x+60.0 {
+                        can_xhenge_light = true;
+                    }
+                }
+
                 continue;
             }else {
                 if car.start_direction.str_drection() == "North" || car.start_direction.str_drection() == "South" {
                 if car.position.y < center_y- 60. -30. || car.position.y > center_y+60.0{
-                     car.update();
-                     car.draw(car_size);
-                     continue;
+                    car.update();
+                    car.draw(car_size);
+                    continue;
+                    //  if car.position.y > center_y- 60. || car.position.y < center_y+60.0
                 }
             } else {
                 if car.position.x < center_x- 60. -30. || car.position.x > center_x+60.0{
-                     car.update();
-                     car.draw(car_size);
-                     continue;
+                    car.update();
+                    car.draw(car_size);
+                    continue;
                 }
             }
             }
             car.draw(car_size);
 
-          
-         
+        }
+        println!("{}",can_xhenge_light);
+        timer += dt;
+        if timer > green_duration  {
+            lights[current_green].set_state(LightState::Red);
+            current_green = (current_green + 1) % lights.len();
+            lights[current_green].set_state(LightState::Green);
+            timer = 0.0;
         }
 
         next_frame().await;
