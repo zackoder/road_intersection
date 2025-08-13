@@ -14,7 +14,7 @@ enum Direction {
 }
 
 impl Direction {
-    fn str_drection(&self)-> &str{
+    fn str_drection(&self)-> &'static str{
         match self {
             Direction::East => "East",
             Direction::North=>"North",
@@ -105,9 +105,6 @@ impl Car {
             Direction::West => self.position.x -= self.speed,
         }
     }
-    // fn CanMove(&self , dr : &Direction )-> bool{
-    //     match self.start_direction =>
-    // }
 
     fn draw(&self, size: Vec2) {
         draw_rectangle(self.position.x, self.position.y, size.x, size.y, self.color.color());
@@ -191,17 +188,35 @@ async fn main() {
             // }
             light.draw(light_size);
         }
-        // let mut canmove = lights[0].direction.str_drection();
-        // for i in lights {
-        //     if i.state == LightState::Green {
-        //         canmove = i.direction.str_drection();
-        //     }
-        // }
+        let mut canmove = lights[0].direction.str_drection();
+        for i in &lights {
+            if i.state == LightState::Green {
+                canmove = i.direction.str_drection();
+            }
+        }
         for car in cars.iter_mut() {
-            // if car.start_direction.str_drection() == canmove {
-                   car.update();
+            if car.start_direction.str_drection() == canmove {
+                car.update();
                 car.draw(car_size);
-            // }
+                continue;
+            }else {
+                if car.start_direction.str_drection() == "North" || car.start_direction.str_drection() == "South" {
+                if car.position.y < center_y- 60. -50. || car.position.y > center_y+60.0{
+                     car.update();
+                     car.draw(car_size);
+                     continue;
+                }
+            } else {
+                if car.position.x < center_x- 60. -50. || car.position.x > center_x+60.0{
+                     car.update();
+                     car.draw(car_size);
+                     continue;
+                }
+            }
+            }
+            car.draw(car_size);
+
+          
          
         }
 
