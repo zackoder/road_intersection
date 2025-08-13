@@ -195,19 +195,19 @@ async fn main() {
             }
         }
         for car in cars.iter_mut() {
-            if car.start_direction.str_drection() == canmove {
+            if car.start_direction.str_drection() == canmove  {
                 car.update();
                 car.draw(car_size);
                 continue;
             }else {
                 if car.start_direction.str_drection() == "North" || car.start_direction.str_drection() == "South" {
-                if car.position.y < center_y- 60. -50. || car.position.y > center_y+60.0{
+                if car.position.y < center_y- 60. -30. || car.position.y > center_y+60.0{
                      car.update();
                      car.draw(car_size);
                      continue;
                 }
             } else {
-                if car.position.x < center_x- 60. -50. || car.position.x > center_x+60.0{
+                if car.position.x < center_x- 60. -30. || car.position.x > center_x+60.0{
                      car.update();
                      car.draw(car_size);
                      continue;
