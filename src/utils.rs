@@ -23,26 +23,29 @@ pub fn find_busiest_direction(cars: &Vec<Car>) -> usize {
         if counts[i] > max_count {
             max_count = counts[i];
             max_index = i;
+        } else if max_count  == counts[i]{
+            max_index = i;
         }
     }
     max_index
 }
 
-pub fn is_lane_full(cars: &Vec<Car>, direction: Direction, start_pos: Vec2) -> bool {
-    let mut cars_in_lane = 0;
-    let lane_capacity = 8;
+pub fn is_lane_full(cars: &Vec<Car>, direction: Direction, _start_pos: Vec2) -> bool {
+    
+     let width_screen = screen_width();
+    let height_screen = screen_height();
     for car in cars {
         if car.start_direction == direction {
-            let distance = match direction {
-                Direction::North => (car.position.y - start_pos.y).abs(),
-                Direction::South => (start_pos.y - car.position.y).abs(),
-                Direction::East => (car.position.x - start_pos.x).abs(),
-                Direction::West => (start_pos.x - car.position.x).abs(),
+            let is_can_create = match direction {
+                Direction::North => car.position.y - 50.0>= 0.0,
+                Direction::South => car.position.y <= height_screen-50.0,
+                Direction::East => car.position.x - 50.0>= 0.0,
+                Direction::West => car.position.x<= width_screen-50.0,
             };
-            if distance < 200.0 {
-                cars_in_lane += 1;
+            if !is_can_create {
+                return  true;
             }
         }
     }
-    cars_in_lane >= lane_capacity
+    return false;
 }
