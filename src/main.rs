@@ -2,7 +2,7 @@ mod car;
 mod traffic_light;
 mod utils;
 
-use car::Car;
+use car::*;
 use traffic_light::{Direction, LightState, TrafficLight};
 use utils::{count_cars_by_direction, find_busiest_direction, is_lane_full};
 
@@ -18,7 +18,6 @@ async fn main() {
     let lane_space = 60.0;
     let light_size = vec2(50.0, 50.0);
     let car_size = vec2(30.0, 30.0);
-
 
     let mut lights: Vec<TrafficLight> = vec![
         TrafficLight::new(
@@ -111,45 +110,53 @@ async fn main() {
                     vec2(width_screen, center_y - 30.0),
                 ));
             }
+            if is_key_pressed(KeyCode::Escape) {
+                break;
+            }
+            if is_key_pressed(KeyCode::R) {
+                click = 0.0;
+                cars.push(Car::new_random(
+                    width_screen,
+                    height_screen,
+                    center_x,
+                    center_y,
+                ));
+            }
         }
 
         let dt = 0.02;
         click += dt;
         timer += dt;
         priority_check_timer += dt;
- 
+
         if priority_check_timer > 1.0 {
             let busiest_direction = find_busiest_direction(&cars);
             let counts = count_cars_by_direction(&cars);
-            
-                let current_count = match current_green {
-                    0 => counts[0],
-                    1 => counts[3],
-                    2 => counts[2],
-                    3 => counts[1],
-                    _ => 0,
+
+            let current_count = match current_green {
+                0 => counts[0],
+                1 => counts[3],
+                2 => counts[2],
+                3 => counts[1],
+                _ => 0,
+            };
+
+            let busiest_count = counts[busiest_direction];
+            if busiest_count > current_count + 1 && timer > 1.0 {
+                lights[current_green].set_state(LightState::Red);
+                current_green = match busiest_direction {
+                    0 => 0,
+                    1 => 3,
+                    2 => 2,
+                    3 => 1,
+                    _ => current_green,
                 };
-            
-            
-                let busiest_count = counts[busiest_direction];
-                if busiest_count > current_count + 1 && timer > 1.0 {
-            
-                    lights[current_green].set_state(LightState::Red);
-                    current_green = match busiest_direction {
-                        0 => 0,
-                        1 => 3,
-                        2 => 2,
-                        3 => 1,
-                        _ => current_green,
-                    };
-                }
+            }
 
-                lights[current_green].set_state(LightState::Green);
-                timer = 0.0;
+            lights[current_green].set_state(LightState::Green);
+            timer = 0.0;
 
-                priority_check_timer = 0.0;
-    
-            
+            priority_check_timer = 0.0;
         }
 
         if timer > green_duration {

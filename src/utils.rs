@@ -1,6 +1,6 @@
-use macroquad::prelude::*;
 use crate::car::Car;
 use crate::traffic_light::Direction;
+use macroquad::prelude::*;
 
 pub fn count_cars_by_direction(cars: &Vec<Car>) -> [usize; 4] {
     let mut counts = [0; 4];
@@ -23,7 +23,7 @@ pub fn find_busiest_direction(cars: &Vec<Car>) -> usize {
         if counts[i] > max_count {
             max_count = counts[i];
             max_index = i;
-        } else if max_count  == counts[i]{
+        } else if max_count == counts[i] {
             max_index = i;
         }
     }
@@ -31,19 +31,18 @@ pub fn find_busiest_direction(cars: &Vec<Car>) -> usize {
 }
 
 pub fn is_lane_full(cars: &Vec<Car>, direction: Direction, _start_pos: Vec2) -> bool {
-    
-     let width_screen = screen_width();
+    let width_screen = screen_width();
     let height_screen = screen_height();
     for car in cars {
         if car.start_direction == direction {
             let is_can_create = match direction {
-                Direction::North => car.position.y - 50.0>= 0.0,
-                Direction::South => car.position.y <= height_screen-50.0,
-                Direction::East => car.position.x - 50.0>= 0.0,
-                Direction::West => car.position.x<= width_screen-50.0,
+                Direction::North => car.position.y - 50.0 >= 0.0,
+                Direction::South => car.position.y <= height_screen - 50.0,
+                Direction::East => car.position.x - 50.0 >= 0.0,
+                Direction::West => car.position.x <= width_screen - 50.0,
             };
             if !is_can_create {
-                return  true;
+                return true;
             }
         }
     }

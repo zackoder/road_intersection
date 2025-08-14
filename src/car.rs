@@ -69,6 +69,26 @@ impl Car {
             speed: 2.0,
         }
     }
+
+    pub fn new_random(screen_width: f32, screen_height: f32, center_x: f32, center_y: f32) -> Self {
+        let mut rng = thread_rng();
+        let direction = match rng.gen_range(0..4) {
+            0 => Direction::North,
+            1 => Direction::South,
+            2 => Direction::East,
+            _ => Direction::West,
+        };
+
+        let start_pos = match direction {
+            Direction::North => vec2(center_x - 30.0, 0.0),
+            Direction::South => vec2(center_x, screen_height),
+            Direction::East => vec2(0.0, center_y),
+            Direction::West => vec2(screen_width, center_y - 30.0),
+        };
+
+        Car::new(direction, start_pos)
+    }
+
     fn is_ahead(&self, other_pos: &Vec2) -> bool {
         match self.end_direction {
             Direction::North => {
@@ -99,9 +119,9 @@ impl Car {
                         && (other_pos.x - self.position.x).abs() < CAR_SIZE
                     {
                         other_pos.y - self.position.y
-                    }else if self.is_in_same_lane(&other_pos) &&  self.is_ahead(&other_pos) {
-                         other_pos.y - self.position.y
-                    }else{
+                    } else if self.is_in_same_lane(&other_pos) && self.is_ahead(&other_pos) {
+                        other_pos.y - self.position.y
+                    } else {
                         MIN_DISTANCE
                     }
                 }
