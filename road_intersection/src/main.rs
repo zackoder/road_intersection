@@ -15,16 +15,16 @@ enum Direction {
     East,
 }
 
-impl Direction {
-    fn str_drection(&self) -> &str {
-        match self {
-            Direction::East => "East",
-            Direction::North => "North",
-            Direction::South => "South",
-            _ => "West",
-        }
-    }
-}
+// impl Direction {
+//     fn str_drection(&self) -> &str {
+//         match self {
+//             Direction::East => "East",
+//             Direction::North => "North",
+//             Direction::South => "South",
+//             _ => "West",
+//         }
+//     }
+// }
 
 struct TrafficLight {
     pos: Vec2,
@@ -287,8 +287,6 @@ async fn main() {
     let mut click: f64 = 0.0;
 
     loop {
-        // clear_background(BLACK);
-
         draw_line(center_x, 0.0, center_x, height_screen, 2.0, WHITE);
         draw_line(
             center_x - lane_space,
@@ -328,22 +326,18 @@ async fn main() {
         if click >= 0.4 {
             if is_key_pressed(KeyCode::Up) {
                 click = 0.0;
-                // println!("up");
                 cars.push(Car::new(Direction::South, vec2(center_x, height_screen)));
             }
             if is_key_pressed(KeyCode::Down) {
                 click = 0.0;
-                //  println!("Down");
                 cars.push(Car::new(Direction::North, vec2(center_x - 30.0, 0.0)));
             }
             if is_key_pressed(KeyCode::Left) {
                 click = 0.0;
-                //  println!("Left");
                 cars.push(Car::new(Direction::East, vec2(0.0, center_y)));
             }
             if is_key_pressed(KeyCode::Right) {
                 click = 0.0;
-                //  println!("Right");
                 cars.push(Car::new(
                     Direction::West,
                     vec2(width_screen, center_y - 30.0),
@@ -358,7 +352,6 @@ async fn main() {
             lights[current_green].set_state(LightState::Red);
             current_green = (current_green + 1) % lights.len();
             lights[current_green].set_state(LightState::Green);
-            // lights[0].set_state(LightState::Green);
             timer = 0.0;
         }
 
